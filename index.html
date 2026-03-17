@@ -397,6 +397,33 @@
       background: var(--accent-dim2);
     }
 
+    .btn-clear-phase {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: var(--surface2);
+      border: 1px solid var(--border-hover);
+      padding: 3px 10px;
+      border-radius: 100px;
+      cursor: pointer;
+      flex-shrink: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s, color .15s, border-color .15s;
+    }
+
+    .phase.has-checked .btn-clear-phase {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .btn-clear-phase:hover {
+      color: var(--coral);
+      border-color: rgba(240, 128, 112, .4);
+    }
+
     .btn-clear {
       font-family: 'DM Mono', monospace;
       font-size: 11px;
@@ -583,6 +610,7 @@
         <div class="phase-num num-${p.color}">${p.num < 10 ? '0' + p.num : p.num}</div>
         <span class="phase-title">${p.title}</span>
         <span class="phase-tag ${p.tagClass}">${p.tag}</span>
+        <button class="btn-clear-phase" onclick="clearPhase(${p.num}, event)">Limpar</button>
         <span class="chevron">▼</span>
       </div>
       <div class="phase-body" id="body-${p.num}">
@@ -613,14 +641,28 @@
       });
     }
 
+    function updatePhaseState(phase) {
+      const boxes = [...phase.querySelectorAll('.steps input[type="checkbox"]')];
+      const anyChecked = boxes.some(cb => cb.checked);
+      const allChecked = boxes.every(cb => cb.checked);
+      phase.classList.toggle('has-checked', anyChecked);
+      phase.classList.toggle('completed', allChecked);
+    }
+
     function toggleStep(id, checked) {
       const li = document.getElementById(id);
       li.classList.toggle('done', checked);
+      updatePhaseState(li.closest('.phase'));
+    }
 
-      const phase = li.closest('.phase');
-      const allBoxes = phase.querySelectorAll('.steps input[type="checkbox"]');
-      const allChecked = [...allBoxes].every(cb => cb.checked);
-      phase.classList.toggle('completed', allChecked);
+    function clearPhase(num, event) {
+      event.stopPropagation();
+      const phase = document.querySelector(`.phase[data-num="${num}"]`);
+      phase.querySelectorAll('.steps input[type="checkbox"]').forEach(cb => {
+        cb.checked = false;
+        cb.closest('li').classList.remove('done');
+      });
+      phase.classList.remove('has-checked', 'completed');
     }
 
     function clearAll() {
@@ -628,7 +670,7 @@
         cb.checked = false;
         cb.closest('li').classList.remove('done');
       });
-      document.querySelectorAll('.phase').forEach(p => p.classList.remove('completed'));
+      document.querySelectorAll('.phase').forEach(p => p.classList.remove('has-checked', 'completed'));
     }
 
     function toggle(num) {
