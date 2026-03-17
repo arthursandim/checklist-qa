@@ -1,11 +1,644 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checklist QA</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guia de Processo QA — CTFL ISTQB</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0e0f11;
+      --surface: #161719;
+      --surface2: #1c1e21;
+      --border: rgba(255, 255, 255, 0.07);
+      --border-hover: rgba(255, 255, 255, 0.14);
+      --text: #e8e6e0;
+      --text-muted: #8a8880;
+      --text-faint: #4a4845;
+      --accent: #c8f06e;
+      --accent-dim: rgba(200, 240, 110, 0.12);
+      --accent-dim2: rgba(200, 240, 110, 0.06);
+      --blue: #6eb5f0;
+      --blue-dim: rgba(110, 181, 240, 0.1);
+      --teal: #5edbb8;
+      --teal-dim: rgba(94, 219, 184, 0.1);
+      --amber: #f0b86e;
+      --amber-dim: rgba(240, 184, 110, 0.1);
+      --purple: #a98ef5;
+      --purple-dim: rgba(169, 142, 245, 0.1);
+      --coral: #f08070;
+      --coral-dim: rgba(240, 128, 112, 0.1);
+      --green: #7dd87d;
+      --green-dim: rgba(125, 216, 125, 0.1);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 4rem 2rem 3rem;
+      max-width: 820px;
+      margin: 0 auto;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-label::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 300;
+      line-height: 1.15;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .header-desc {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 520px;
+      line-height: 1.7;
+    }
+
+    /* ── Tabs ── */
+    .tabs-wrapper {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 2rem 2rem 0;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .tab-btn {
+      padding: 7px 18px;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      transition: all .2s;
+      letter-spacing: 0.01em;
+    }
+
+    .tab-btn:hover {
+      border-color: var(--border-hover);
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      background: var(--accent-dim);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* ── Legend ── */
+    .legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-faint);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .legend-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    /* ── Phase Cards ── */
+    .main {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 2rem 5rem;
+    }
+
+    .phase-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .phase {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color .2s;
+      background: var(--surface);
+    }
+
+    .phase:hover {
+      border-color: var(--border-hover);
+    }
+
+    .phase.open {
+      border-color: var(--border-hover);
+    }
+
+    .phase-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      cursor: pointer;
+      user-select: none;
+      transition: background .15s;
+    }
+
+    .phase-header:hover {
+      background: var(--surface2);
+    }
+
+    .phase-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      flex-shrink: 0;
+      border: 1px solid;
+    }
+
+    .num-blue {
+      color: var(--blue);
+      background: var(--blue-dim);
+      border-color: rgba(110, 181, 240, .25);
+    }
+
+    .num-teal {
+      color: var(--teal);
+      background: var(--teal-dim);
+      border-color: rgba(94, 219, 184, .25);
+    }
+
+    .num-amber {
+      color: var(--amber);
+      background: var(--amber-dim);
+      border-color: rgba(240, 184, 110, .25);
+    }
+
+    .num-purple {
+      color: var(--purple);
+      background: var(--purple-dim);
+      border-color: rgba(169, 142, 245, .25);
+    }
+
+    .num-coral {
+      color: var(--coral);
+      background: var(--coral-dim);
+      border-color: rgba(240, 128, 112, .25);
+    }
+
+    .num-green {
+      color: var(--green);
+      background: var(--green-dim);
+      border-color: rgba(125, 216, 125, .25);
+    }
+
+    .phase-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      flex: 1;
+      letter-spacing: 0.01em;
+    }
+
+    .phase-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 100px;
+      border: 1px solid;
+    }
+
+    .tag-ctfl {
+      color: var(--accent);
+      background: var(--accent-dim2);
+      border-color: rgba(200, 240, 110, .2);
+    }
+
+    .tag-manual {
+      color: var(--teal);
+      background: var(--teal-dim);
+      border-color: rgba(94, 219, 184, .2);
+    }
+
+    .tag-auto {
+      color: var(--amber);
+      background: var(--amber-dim);
+      border-color: rgba(240, 184, 110, .2);
+    }
+
+    .tag-both {
+      color: var(--blue);
+      background: var(--blue-dim);
+      border-color: rgba(110, 181, 240, .2);
+    }
+
+    .chevron {
+      color: var(--text-faint);
+      font-size: 10px;
+      transition: transform .25s ease;
+      flex-shrink: 0;
+    }
+
+    .phase.open .chevron {
+      transform: rotate(180deg);
+    }
+
+    .phase-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .phase-body-inner {
+      padding: 4px 18px 18px 60px;
+    }
+
+    .steps {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .steps li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .steps li::before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--text-faint);
+      margin-top: 9px;
+      flex-shrink: 0;
+    }
+
+    .note {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      line-height: 1.6;
+      border-left: 2px solid;
+      font-family: 'DM Mono', monospace;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+    }
+
+    .note-bug {
+      background: rgba(240, 128, 112, .06);
+      color: var(--coral);
+      border-color: var(--coral);
+    }
+
+    .note-feature {
+      background: rgba(94, 219, 184, .06);
+      color: var(--teal);
+      border-color: var(--teal);
+    }
+
+    .note-shared {
+      background: rgba(110, 181, 240, .06);
+      color: var(--blue);
+      border-color: var(--blue);
+    }
+
+    /* ── Footer ── */
+    footer {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 2rem 2rem 3rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: gap;
+      gap: 8px;
+    }
+
+    .footer-text {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-faint);
+      letter-spacing: 0.06em;
+    }
+
+    .footer-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(200, 240, 110, .25);
+      padding: 4px 10px;
+      border-radius: 100px;
+      background: var(--accent-dim2);
+    }
+
+    /* ── Scroll animation ── */
+    .phase {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity .4s ease, transform .4s ease, border-color .2s;
+    }
+
+    .phase.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 600px) {
+
+      header,
+      .tabs-wrapper,
+      .main {
+        padding-left: 1.2rem;
+        padding-right: 1.2rem;
+      }
+
+      .phase-body-inner {
+        padding-left: 18px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .phase-tag {
+        display: none;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    
+
+  <header>
+    <div class="header-label">CTFL ISTQB — Processo de Teste</div>
+    <h1>Guia de <em>QA</em><br>para analistas em formação</h1>
+    <p class="header-desc">Passo a passo baseado no CTFL ISTQB para testar tarefas de novos recursos e tratamento de
+      bugs — testes manuais e automatizados.</p>
+  </header>
+
+  <div class="tabs-wrapper">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="all">Visão geral</button>
+      <button class="tab-btn" data-tab="feature">Novo recurso</button>
+      <button class="tab-btn" data-tab="bug">Tratamento de bug</button>
+    </div>
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--accent)"></div> Conceito CTFL
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--teal)"></div> Manual
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--amber)"></div> Automatizado
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--blue)"></div> Ambos
+      </div>
+    </div>
+  </div>
+
+  <main class="main">
+    <div class="phase-list" id="phase-list"></div>
+  </main>
+
+  <footer>
+    <span class="footer-text">Baseado em CTFL 4.0 — ISTQB / BSTQB</span>
+    <span class="footer-badge">QA Reference</span>
+  </footer>
+
+  <script>
+    const phases = [
+      {
+        num: 1, color: 'blue', title: 'Análise e entendimento da tarefa',
+        tag: 'CTFL', tagClass: 'tag-ctfl',
+        types: ['all', 'feature', 'bug'],
+        steps: [
+          'Leia o ticket completo: descrição, critérios de aceite e anexos.',
+          'Identifique o tipo de tarefa: novo recurso ou correção de bug.',
+          'Compreenda o escopo — o que está dentro e o que está fora da mudança.',
+          'Mapeie as dependências com outros módulos ou funcionalidades.',
+          'Identifique os riscos e áreas de maior impacto (risk-based testing).',
+        ],
+        note: { text: 'CTFL: esta fase corresponde ao processo de "análise de teste" — entender o que testar antes de definir como testar.', cls: 'note-shared' },
+      },
+      {
+        num: 2, color: 'teal', title: 'Planejamento dos testes',
+        tag: 'CTFL', tagClass: 'tag-ctfl',
+        types: ['all', 'feature', 'bug'],
+        steps: [
+          'Defina a abordagem: quais tipos de teste aplicar (funcional, regressão, integração, etc.).',
+          'Estime o esforço e o tempo necessário para os testes.',
+          'Determine o ambiente de teste necessário (dados, usuário, configuração).',
+          'Decida quais casos serão manuais e quais serão automatizados.',
+          'Verifique se existem testes automatizados anteriores que precisam ser atualizados.',
+        ],
+        note: { text: 'Para bugs: foque nos testes de confirmação (confirmar a correção) e regressão (garantir que nada quebrou na área afetada).', cls: 'note-bug' },
+      },
+      {
+        num: 3, color: 'amber', title: 'Criação dos casos de teste',
+        tag: 'Ambos', tagClass: 'tag-both',
+        types: ['all', 'feature', 'bug'],
+        steps: [
+          'Escreva os casos de teste com: pré-condições, passos, dados de entrada e resultado esperado.',
+          'Use técnicas de design: partição de equivalência, análise de valor limite, tabela de decisão.',
+          'Cubra cenários positivos (happy path) e negativos (erros, limites, permissões).',
+          'Para bugs: crie um caso de teste que reproduza exatamente o comportamento defeituoso.',
+          'Para novos recursos: cubra todos os critérios de aceite do ticket.',
+          'Documente no formato padrão da equipe (ex: Given/When/Then ou CT-01, CT-02...).',
+        ],
+        note: null,
+      },
+      {
+        num: 4, color: 'purple', title: 'Execução dos testes manuais',
+        tag: 'Manual', tagClass: 'tag-manual',
+        types: ['all', 'feature', 'bug'],
+        steps: [
+          'Prepare o ambiente e os dados de teste necessários.',
+          'Execute cada caso de teste seguindo os passos documentados.',
+          'Registre o resultado de cada caso: passou, falhou ou bloqueado.',
+          'Capture evidências para todos os casos (print, vídeo, log).',
+          'Para falhas: documente o comportamento real e compare com o esperado.',
+          'Teste exploratório: após a execução formal, explore a funcionalidade livremente.',
+        ],
+        note: { text: 'Para bugs: execute o caso que reproduz o defeito antes de qualquer outro para confirmar a correção (teste de confirmação).', cls: 'note-bug' },
+      },
+      {
+        num: 5, color: 'coral', title: 'Execução dos testes automatizados',
+        tag: 'Auto', tagClass: 'tag-auto',
+        types: ['all', 'feature', 'bug'],
+        steps: [
+          'Execute a suíte de regressão automatizada existente.',
+          'Para novos recursos: crie ou solicite scripts de automação para os cenários principais.',
+          'Para bugs: verifique se já existe (ou crie) um teste automatizado que cubra o defeito corrigido.',
+          'Analise os resultados: diferencie falhas reais de falhas de ambiente (flaky tests).',
+          'Atualize scripts desatualizados que quebraram por mudanças legítimas na UI ou lógica.',
+        ],
+        note: { text: 'CTFL: testes de regressão são candidatos ideais para automação — executados repetidamente a cada deploy ou alteração.', cls: 'note-shared' },
+      },
+      {
+        num: 6, color: 'green', title: 'Registro e comunicação dos resultados',
+        tag: 'CTFL', tagClass: 'tag-ctfl',
+        types: ['all', 'feature', 'bug'],
+        steps: [
+          'Registre o resultado consolidado no ticket (passou / reprovado / parcial).',
+          'Reporte novos defeitos encontrados com: passos para reproduzir, evidência e severidade.',
+          'Inclua métricas básicas: total de casos, passaram, falharam, bloqueados.',
+          'Comunique ao desenvolvedor os defeitos com informação suficiente para correção.',
+          'Atualize o status do ticket conforme o fluxo da equipe (ex: "Em reteste", "Aprovado em QA").',
+        ],
+        note: { text: 'Para novos recursos aprovados: documente quais testes cobrirão esta funcionalidade no ciclo de regressão futuro.', cls: 'note-feature' },
+      },
+      {
+        num: 7, color: 'blue', title: 'Reteste e regressão (se houver falhas)',
+        tag: 'Ambos', tagClass: 'tag-both',
+        types: ['all', 'feature', 'bug'],
+        steps: [
+          'Após a correção do defeito, execute novamente os casos que falharam.',
+          'Execute regressão na área afetada pela correção (escopo ampliado se necessário).',
+          'Confirme que os critérios de aceite originais ainda são atendidos.',
+          'Valide que a correção não introduziu novos defeitos (regressão).',
+          'Repita o ciclo até que todos os casos estejam aprovados ou riscos estejam aceitos.',
+        ],
+        note: null,
+      },
+    ];
+
+    let activeTab = 'all';
+
+    function render() {
+      const list = document.getElementById('phase-list');
+      const filtered = phases.filter(p => p.types.includes(activeTab));
+      list.innerHTML = filtered.map(p => `
+    <div class="phase" data-num="${p.num}">
+      <div class="phase-header" onclick="toggle(${p.num})">
+        <div class="phase-num num-${p.color}">${p.num < 10 ? '0' + p.num : p.num}</div>
+        <span class="phase-title">${p.title}</span>
+        <span class="phase-tag ${p.tagClass}">${p.tag}</span>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="phase-body" id="body-${p.num}">
+        <div class="phase-body-inner">
+          <ul class="steps">
+            ${p.steps.map(s => `<li>${s}</li>`).join('')}
+          </ul>
+          ${p.note ? `<div class="note ${p.note.cls}">${p.note.text}</div>` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+      // Scroll reveal
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+      }, { threshold: 0.05 });
+
+      document.querySelectorAll('.phase').forEach((el, i) => {
+        el.style.transitionDelay = (i * 60) + 'ms';
+        observer.observe(el);
+      });
+    }
+
+    function toggle(num) {
+      const phase = document.querySelector(`.phase[data-num="${num}"]`);
+      const body = document.getElementById('body-' + num);
+      const isOpen = phase.classList.contains('open');
+      phase.classList.toggle('open', !isOpen);
+      body.style.maxHeight = isOpen ? '0' : body.scrollHeight + 'px';
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeTab = btn.dataset.tab;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        render();
+      });
+    });
+
+    render();
+  </script>
 </body>
+
 </html>
